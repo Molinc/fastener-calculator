@@ -3,178 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор крепёжных соединений</title>
+    <title>Расчет параметров резьбовых соединений</title>
     <style>
-        /* Стили CSS */
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
             color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        form label {
-            display: block;
+        
+        h1 {
+            font-size: 2.2rem;
             margin-bottom: 10px;
-            font-weight: bold;
         }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .result-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+            font-size: 1.6rem;
+        }
+        
+        h3 {
+            color: #3498db;
+            margin: 25px 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
         input[type="number"] {
-            width: 100px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
+        
+        input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #boltResults, #studResults {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-        }
-        table {
             width: 100%;
-            border-collapse: collapse;
+            font-weight: 600;
+            transition: all 0.3s;
             margin-top: 10px;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #2980b9, #2573a7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
         }
-        th {
-            background-color: #f2f2f2;
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .param-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .param-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .param-formula {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 3px;
+            font-style: italic;
+        }
+        
+        .note {
+            background: #fffde7;
+            border-left: 4px solid #f1c40f;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .bolt-icon {
+            color: #e74c3c;
+        }
+        
+        .stud-icon {
+            color: #3498db;
+        }
+        
+        .value-unit {
+            font-size: 0.9rem;
+            color: #95a5a6;
+            margin-left: 2px;
+        }
+        
+        .standard-values {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .standard-values h4 {
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+        
+        .standard-values ul {
+            padding-left: 20px;
+        }
+        
+        .standard-values li {
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Расчет параметров резьбовых соединений</h1>
+        <p class="subtitle">Расчет геометрических параметров соединений шпилькой и болтом</p>
+    </header>
+    
     <div class="container">
-        <h1>Калькулятор крепёжных соединений</h1>
-
-        <!-- Форма для расчёта болта -->
-        <div id="boltCalculator">
-            <h2>Расчёт болта</h2>
-            <form id="boltForm">
-                <label>Диаметр болта (d, мм): 
-                    <input type="number" id="boltDiameter" required>
-                </label><br>
-                <label>Толщина первой детали (b₁, мм):
-                    <input type="number" id="b1" required>
-                </label><br>
-                <label>Толщина второй детали (b₂, мм):
-                    <input type="number" id="b2" required>
-                </label><br>
-                <label>Высота гайки (h, мм):
-                    <input type="number" id="nutHeight" required>
-                </label><br>
-                <label>Толщина шайбы (s, мм):
-                    <input type="number" id="washerThickness" required>
-                </label><br>
-                <button type="button" onclick="calculateBolt()">Рассчитать</button>
-            </form>
-            <div id="boltResults"></div>
+        <div class="input-section">
+            <h2>Исходные данные</h2>
+            
+            <div class="input-group">
+                <label for="diameter">Номинальный диаметр резьбы (d), мм:</label>
+                <input type="number" id="diameter" step="0.1" min="1" max="200" value="20">
+            </div>
+            
+            <div class="input-group">
+                <label for="pitch">Шаг резьбы (p), мм:</label>
+                <input type="number" id="pitch" step="0.1" min="0.1" max="10" value="2.5">
+            </div>
+            
+            <div class="input-group">
+                <label for="coefficient">Коэффициент для шпильки (x):</label>
+                <input type="number" id="coefficient" step="0.1" min="0.5" max="3" value="1.5">
+                <p style="font-size:0.85rem; color:#666; margin-top:5px;">Обычно: 1.0 для стали, 1.35 для чугуна, 2.0 для легких сплавов</p>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculate()">Рассчитать параметры</button>
+            
+            <div class="standard-values">
+                <h4>Стандартные значения шага резьбы (мм):</h4>
+                <ul>
+                    <li><strong>М10:</strong> крупный 1.5, мелкий 1.25</li>
+                    <li><strong>М12:</strong> крупный 1.75, мелкий 1.25</li>
+                    <li><strong>М16:</strong> крупный 2.0, мелкий 1.5</li>
+                    <li><strong>М20:</strong> крупный 2.5, мелкий 1.5</li>
+                    <li><strong>М24:</strong> крупный 3.0, мелкий 2.0</li>
+                </ul>
+            </div>
         </div>
-
-        <!-- Форма для расчёта шпильки -->
-        <div id="studCalculator">
-            <h2>Расчёт шпильки</h2>
-            <form id="studForm">
-                <label>Диаметр шпильки (d, мм):
-                    <input type="number" id="studDiameter" required>
-                </label><br>
-                <label>Толщина детали (мм):
-                    <input type="number" id="partThickness" required>
-                </label><br>
-                <label>Глубина ввинчивания (lₑᵥ, мм):
-                    <input type="number" id="screwInDepth" required>
-                </label><br>
-                <label>Высота гайки (h, мм):
-                    <input type="number" id="studNutHeight" required>
-                </label><br>
-                <label>Толщина шайбы (s, мм):
-                    <input type="number" id="studWasherThickness" required>
-                </label><br>
-                <button type="button" onclick="calculateStud()">Рассчитать</button>
-            </form>
-            <div id="studResults"></div>
+        
+        <div class="result-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg class="icon stud-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6Z"/>
+                    </svg>
+                    <h2>Соединение шпилькой</h2>
+                </div>
+            </div>
+            
+            <div class="results-grid" id="stud-results">
+                <!-- Результаты для шпильки будут здесь -->
+            </div>
+            
+            <h3>Соединение болтом</h3>
+            <div class="results-grid" id="bolt-results">
+                <!-- Результаты для болта будут здесь -->
+            </div>
+            
+            <div class="note">
+                <p><strong>Примечание:</strong> Все размеры вычислены на основе стандартных геометрических соотношений. 
+                Для точных инженерных расчетов необходимо учитывать дополнительные факторы: класс точности, 
+                материал, условия эксплуатации и стандарты (ГОСТ, DIN, ISO).</p>
+                <p style="margin-top: 8px;">r₁ определяется по построению на чертеже.</p>
+            </div>
         </div>
     </div>
+
     <script>
-       function calculateBolt() {
-    const d = parseFloat(document.getElementById('boltDiameter').value);
-    const b1 = parseFloat(document.getElementById('b1').value);
-    const b2 = parseFloat(document.getElementById('b2').value);
-    const h = parseFloat(document.getElementById('nutHeight').value);
-    const s = parseFloat(document.getElementById('washerThickness').value);
-
-    const thickness = b1 + b2; // Толщина пакета
-    const k = 0.3 * d; // Выступающий конец (0.3d)
-    const L = thickness + h + s + k; // Длина болта
-    const threadLength = 30 + (d > 20 ? 10 : 0); // Примерная длина резьбы
-
-    const results = `
-        <table border="1">
-            <tr><th>Параметр</th><th>Расчётное значение</th><th>Стандартное значение (ГОСТ)</th></tr>
-            <tr><td>Диаметр болта (d)</td><td>${d} мм</td><td>По ГОСТ 7798-70</td></tr>
-            <tr><td>Толщина пакета (b1+b2)</td><td>${thickness} мм</td><td>-</td></tr>
-            <tr><td>Высота гайки (h)</td><td>${h} мм</td><td>По ГОСТ 5915-70</td></tr>
-            <tr><td>Толщина шайбы (s)</td><td>${s} мм</td><td>По ГОСТ 11371-78</td></tr>
-            <tr><td>Выступающий конец (k)</td><td>${k.toFixed(1)} мм</td><td>-</td></tr>
-            <tr><td>Длина болта (L)</td><td>${L.toFixed(1)} мм</td><td>Ближайшая стандартная длина</td></tr>
-            <tr><td>Длина резьбовой части</td><td>${threadLength} мм</td><td>По ГОСТ 24705-81</td></tr>
-        </table>
-    `;
-
-    document.getElementById('boltResults').innerHTML = results;
-}
-
-function calculateStud() {
-    const d = parseFloat(document.getElementById('studDiameter').value);
-    const thickness = parseFloat(document.getElementById('partThickness').value);
-    const l_vv = parseFloat(document.getElementById('screwInDepth').value);
-    const h = parseFloat(document.getElementById('studNutHeight').value);
-    const s = parseFloat(document.getElementById('studWasherThickness').value);
-
-    const k = 10; // Запас на затяжку (примерное значение)
-    const L = thickness + h + s + k + l_vv; // Полная длина шпильки
-    const threadLength = l_vv + 25; // Длина резьбовой части (ввинчиваемый конец + гаечный)
-
-    const results = `
-        <table border="1">
-            <tr><th>Параметр</th><th>Расчётное значение</th><th>Стандартное значение (ГОСТ)</th></tr>
-            <tr><td>Диаметр шпильки (d)</td><td>${d} мм</td><td>По ГОСТ 22032-76</td></tr>
-            <tr><td>Толщина детали</td><td>${thickness} мм</td><td>-</td></tr>
-            <tr><td>Глубина ввинчивания (l_vv)</td><td>${l_vv} мм</td><td>0.8-1.0 * d по ГОСТ</td></tr>
-            <tr><td>Высота гайки (h)</td><td>${h} мм</td><td>По ГОСТ 5915-70</td></tr>
-            <tr><td>Толщина шайбы (s)</td><td>${s} мм</td><td>По ГОСТ 11371-78</td></tr>
-            <tr><td>Запас на затяжку (k)</td><td>${k} мм</td><td>-</td></tr>
-            <tr><td>Полная длина шпильки (L)</td><td>${L.toFixed(1)} мм</td><td>Ближайшая стандартная длина</td></tr>
-            <tr><td>Длина резьбовой части</td><td>${threadLength} мм</td><td>По ГОСТ 24705-81</td></tr>
-        </table>
-    `;
-
-    document.getElementById('studResults').innerHTML = results;
-}
-    <script>
+        function calculate() {
+            // Получаем значения из полей ввода
+            const d = parseFloat(document.getElementById('diameter').value);
+            const p = parseFloat(document.getElementById('pitch').value);
+            const x = parseFloat(document.getElementById('coefficient').value);
+            
+            // Проверка на валидность
+            if (isNaN(d) || isNaN(p) || isNaN(x) || d <= 0 || p <= 0) {
+                alert('Пожалуйста, введите корректные числовые значения');
+                return;
+            }
+            
+            // Расчет параметров для шпильки
+            const l1 = x * d;
+            const l2 = l1 + 5 * p;
+            const l3 = l1 + 2 * p;
+            
+            // Расчет параметров для болта
+            const d1 = d - 2 * p;
+            const D = 2 * d;
+            const H = 0.8 * d;
+            const h = 0.7 * d;
+            const c = 0.1 * d;
+            const R = 1.5 * d;
+            const r = c;
+            const r2 = d;
+            const d2 = 1.1 * d;
+            const k = 0.3 * d;
+            const Dsh = 2.2 * d;
+            const s = 0.15 * d;
+            const l0 = 2 * d + 2 * p;
+            
+            // Форматирование чисел (округление до 2 знаков после запятой)
+            function format(value) {
+                return value.toFixed(2);
+            }
+            
+            // Обновляем результаты для шпильки
+            const studResults = document.getElementById('stud-results');
+            studResults.innerHTML = `
+                <div class="result-item">
+                    <div class="param-name">l₁ (длина ввинчиваемой части)</div>
+                    <div class="param-value">${format(l1)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">l₁ = x·d = ${x} × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">l₂ (длина под гайку)</div>
+                    <div class="param-value">${format(l2)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">l₂ = l₁ + 5p = ${format(l1)} + 5 × ${format(p)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">l₃ (общая длина резьбы)</div>
+                    <div class="param-value">${format(l3)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">l₃ = l₁ + 2p = ${format(l1)} + 2 × ${format(p)}</div>
+                </div>
+            `;
+            
+            // Обновляем результаты для болта
+            const boltResults = document.getElementById('bolt-results');
+            boltResults.innerHTML = `
+                <div class="result-item">
+                    <div class="param-name">d₁ (внутренний диаметр)</div>
+                    <div class="param-value">${format(d1)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">d₁ = d - 2p = ${format(d)} - 2 × ${format(p)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">D (диаметр головки)</div>
+                    <div class="param-value">${format(D)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">D = 2d = 2 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">H (высота головки)</div>
+                    <div class="param-value">${format(H)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">H = 0.8d = 0.8 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">h (высота элемента)</div>
+                    <div class="param-value">${format(h)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">h = 0.7d = 0.7 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">c (фаска)</div>
+                    <div class="param-value">${format(c)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">c = 0.1d = 0.1 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">R (радиус скругления)</div>
+                    <div class="param-value">${format(R)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">R = 1.5d = 1.5 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">r (радиус)</div>
+                    <div class="param-value">${format(r)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">r = c = ${format(c)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">r₂ (радиус)</div>
+                    <div class="param-value">${format(r2)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">r₂ = d = ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">d₂ (диаметр)</div>
+                    <div class="param-value">${format(d2)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">d₂ = 1.1d = 1.1 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">k (катет/высота)</div>
+                    <div class="param-value">${format(k)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">k = 0.3d = 0.3 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">Dш (диаметр под ключ)</div>
+                    <div class="param-value">${format(Dsh)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">Dш = 2.2d = 2.2 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">s (толщина)</div>
+                    <div class="param-value">${format(s)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">s = 0.15d = 0.15 × ${format(d)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="param-name">l₀ (длина)</div>
+                    <div class="param-value">${format(l0)}<span class="value-unit"> мм</span></div>
+                    <div class="param-formula">l₀ = 2d + 2p = 2 × ${format(d)} + 2 × ${format(p)}</div>
+                </div>
+            `;
+        }
+        
+        // Выполняем расчет при загрузке страницы с значениями по умолчанию
+        window.onload = calculate;
+    </script>
+</body>
 </html>
